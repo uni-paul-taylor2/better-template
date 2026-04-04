@@ -35,7 +35,7 @@ $ fastapi dev
 ```
 
 # Initializing the Database
-When connecting the project to a fresh empty database ensure the appropriate configuration is set then file then run the following command.
+When connecting the project to a fresh empty database ensure the appropriate configuration is set then file then run the following command. (If python doesn't work, python3)
 
 ```
 $ python app/cli.py initialize

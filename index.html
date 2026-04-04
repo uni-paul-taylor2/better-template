@@ -115,7 +115,7 @@
           {% for track in tracks %}
           <div class="card">
             <div class="card-content">
-              <span>{{track.title}} - {{len(track.reactions)}} reactions</span>
+              <span>{{track.title}} - {{reaction_count}} reactions</span>
               <a href="/track/{{track.id}}" class="btn-small right waves-effect purple lighten-1">View Comments ></a>
             </div>
           </div>
@@ -143,7 +143,7 @@
             <!-- Repeatable Comment -->
             {% for comment in comments %}
             <li class="collection-item">
-              Text
+              {{comment.content}}
               <a href="delete/{{comment.id}}" class="secondary-content"><i class="material-icons">delete</i></a>
             </li>
             {% endfor %}

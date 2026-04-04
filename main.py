@@ -83,14 +83,15 @@ def home_view(request: Request, user: AuthDep, db: SessionDep):
     context={
       "albums": albums,
       "tracks": tracks,
-      "comments": comments
+      "comments": comments,
+      "reaction_count": len(tracks[0].reactions)
     }
   )
 
 @app.get('/album/{album_id}')
 def home_with_album(request: Request, user: AuthDep, db: SessionDep, album_id:int):
   albums = db.exec(select(Album)).all()
-  tracks = db.exec(select(Album).where(id==album_id)).first().tracks
+  tracks = db.exec(select(Album).where(Album.id==album_id)).first().tracks
   comments = tracks[0].comments
   return templates.TemplateResponse(
     request=request,
@@ -98,13 +99,14 @@ def home_with_album(request: Request, user: AuthDep, db: SessionDep, album_id:in
     context={
       "albums": albums,
       "tracks": tracks,
-      "comments": comments
+      "comments": comments,
+      "reaction_count": len(tracks[0].reactions)
     }
   )
 
 @app.get('/track/{track_id}')
 def home_with_track(request: Request, user: AuthDep, db: SessionDep, track_id:int):
-  track = db.exec(select(Track).where(id=track_id)).first()
+  track = db.exec(select(Track).where(Track.id==track_id)).first()
   comments = track.comments
   tracks = track.album.tracks
   albums = db.exec(select(Album)).all()
@@ -114,7 +116,8 @@ def home_with_track(request: Request, user: AuthDep, db: SessionDep, track_id:in
     context={
       "albums": albums,
       "tracks": tracks,
-      "comments": comments
+      "comments": comments,
+      "reaction_count": len(track.reactions)
     }
   )
 
