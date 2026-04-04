@@ -84,7 +84,8 @@ def home_view(request: Request, user: AuthDep, db: SessionDep):
       "albums": albums,
       "tracks": tracks,
       "comments": comments,
-      "reaction_count": len(tracks[0].reactions)
+      "reaction_count": len(tracks[0].reactions),
+      "selected_track": tracks[0]
     }
   )
 
@@ -100,7 +101,8 @@ def home_with_album(request: Request, user: AuthDep, db: SessionDep, album_id:in
       "albums": albums,
       "tracks": tracks,
       "comments": comments,
-      "reaction_count": len(tracks[0].reactions)
+      "reaction_count": len(tracks[0].reactions),
+      "selected_track": tracks[0]
     }
   )
 
@@ -117,9 +119,25 @@ def home_with_track(request: Request, user: AuthDep, db: SessionDep, track_id:in
       "albums": albums,
       "tracks": tracks,
       "comments": comments,
-      "reaction_count": len(track.reactions)
+      "reaction_count": len(track.reactions),
+      "selected_track": track
     }
   )
+
+@app.get('/delete/{comment_id}')
+def delete_comment(request: Request, user: AuthDep, db: SessionDep, comment_id: int):
+  comment = db.exec(select(Comment).where(Comment.id == comment_id)).first()
+  track_id = comment.track_id
+  db.delete(comment)
+  db.commit()
+  return RedirectResponse(url=f"/track/{track_id}", status_code=303)
+
+@app.post("/comment/{track_id}")
+def add_comment(request: Request, user: AuthDep, db: SessionDep, track_id: int, comment: str = Form(...)):
+  comment = Comment(content=comment,track_id=track_id,user_id=user.id)
+  db.add(comment)
+  db.commit()
+  return RedirectResponse(url=f"/track/{track_id}", status_code=303)
 
 @app.get('/logout')
 async def logout(request: Request):

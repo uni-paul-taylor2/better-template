@@ -16,14 +16,16 @@ def initialize():
         
         bob = UserBase(username='bob', email='bob@mail.com', password=encrypt_password("bobpass"))
         bob_db = User.model_validate(bob)
+        # when initialising, u can use id logic for everything else besides user
+        # place in the user object else u gonna get None for the id (during initialisation)
         album_1 = Album(id=0,img="https://weblabs.web.app/api/brainrot/1.webp",title="Album 1",artist="man1")
-        track_1 = Track(id=10,title="Song 10",album_id=0, album=album_1)
-        track_2 = Track(id=11,title="Song 11",album_id=0, album=album_1)
-        comment_1 = Comment(id=100,content="idk this song is peak",user_id=bob_db.id,user=bob_db,track_id=track_2.id,track=track_2)
+        track_1 = Track(id=10,title="Song 10",album_id=album_1.id)
+        track_2 = Track(id=11,title="Song 11",album_id=album_1.id)
+        comment_1 = Comment(id=100,content="idk this song is peak",user=bob_db,track_id=track_2.id)
 
         album_2 = Album(id=1,img="https://weblabs.web.app/api/brainrot/2.webp",title="Album 2",artist="man2")
-        track_3 = Track(id=999,title="And Is Dat",album_id=1,album=album_2)
-        reaction_1 = Reaction(id=998,user_id=bob_db.id,user=bob_db,track_id=track_3.id,track=track_3)
+        track_3 = Track(id=999,title="And Is Dat",album_id=album_2.id)
+        reaction_1 = Reaction(id=998,user=bob_db,track_id=track_3.id)
 
         db.add(bob_db)
         db.add(album_1)

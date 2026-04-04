@@ -128,9 +128,9 @@
       <div class="col s4 m4" style="display: flex; flex-direction: column;">
         <h6>Selected Track Comments</h6>
         <!-- Comment Form -->
-        <form class="row" method="POST" action="/comment" style="margin-bottom: 0;">
+        <form class="row" method="POST" action="/comment/{{selected_track.id}}" style="margin-bottom: 0;">
           <div class="input-field col s9">
-            <input type="text" id="comment" placeholder="Enter a comment">
+            <input type="text" id="comment" name="comment" placeholder="Enter a comment">
             <label for="comment">Comment</label>
           </div>
           <div class="col s3" style="display: flex; align-items: center;">
@@ -144,7 +144,7 @@
             {% for comment in comments %}
             <li class="collection-item">
               {{comment.content}}
-              <a href="delete/{{comment.id}}" class="secondary-content"><i class="material-icons">delete</i></a>
+              <a href="/delete/{{comment.id}}" class="secondary-content"><i class="material-icons">delete</i></a>
             </li>
             {% endfor %}
             <!-- End Repeat -->
