@@ -11,8 +11,8 @@ class UserBase(SQLModel,):
 class User(UserBase, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    comments: list['Comment'] = Relationship(back_populates="user")
-    reactions: list['Reaction'] = Relationship(back_populates="user")
+    user_comments: list['Comment'] = Relationship(back_populates="user")
+    user_reactions: list['Reaction'] = Relationship(back_populates="user")
 
     def check_password(self, plaintext_password:str):
         return PasswordHash.recommended().verify(password=plaintext_password, hash=self.password)
@@ -32,8 +32,9 @@ class Album(SQLModel, table=True):
 class Track(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     title: str = Field(default="")
+    album_id: int = Field(foreign_key="album.id")
 
-    album: Album = Relationship(back_populates="track")
+    album: Album = Relationship(back_populates="tracks")
     comments: list['Comment'] = Relationship(back_populates="track")
     reactions: list['Reaction'] = Relationship(back_populates="track")
 
@@ -47,9 +48,11 @@ class Track(SQLModel, table=True):
 class Comment(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     content: str = Field(default="")
+    user_id: int = Field(foreign_key="user.id")
+    track_id: int = Field(foreign_key="track.id")
 
-    track: Track = Relationship(back_populates="comment")
-    user: User = Relationship(back_populates="comment")
+    track: Track = Relationship(back_populates="comments")
+    user: User = Relationship(back_populates="user_comments")
 
     def delete(self):
         pass
@@ -58,9 +61,11 @@ class Comment(SQLModel, table=True):
 class Reaction(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     like: bool = Field(default=True)
+    user_id: int = Field(foreign_key="user.id")
+    track_id: int = Field(foreign_key="track.id")
 
-    track: Track = Relationship(back_populates="reaction")
-    user: User = Relationship(back_populates="reaction")
+    track: Track = Relationship(back_populates="reactions")
+    user: User = Relationship(back_populates="user_reactions")
 
     def react(self, type):
         self.like=bool(type)
